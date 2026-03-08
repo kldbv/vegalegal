@@ -6,23 +6,18 @@ import { SectionHeader } from '@/components/ui/SectionHeader'
 const steps = [
   {
     num: '01',
-    title: 'Анкета',
-    text: 'Заполните форму или напишите в WhatsApp',
+    title: 'Заполни заявку',
+    text: 'Оставьте свои данные на сайте в удобной форме',
   },
   {
     num: '02',
-    title: 'Консультация',
-    text: 'Юрист анализирует вашу структуру',
+    title: 'Ответьте на вопросы специалиста',
+    text: 'Наши специалисты свяжутся с вами для уточнения деталей и подберут оптимальное решение',
   },
   {
     num: '03',
-    title: 'Документы',
-    text: 'Полный пакет под ключ',
-  },
-  {
-    num: '04',
-    title: 'Регистрация',
-    text: 'Компания готова + помощь со счётом',
+    title: 'Получи результат',
+    text: 'Все необходимые услуги будут оказаны вам в кратчайшие сроки',
   },
 ]
 
@@ -33,15 +28,15 @@ export function Process() {
         <FadeIn>
           <SectionHeader
             label="Процесс"
-            title="Регистрация под ключ за 4 шага"
+            title="Как мы работаем — 3 простых шага"
           />
         </FadeIn>
 
         <div className="relative">
           {/* Connection line (desktop) */}
-          <div className="hidden sm:block absolute top-10 left-[12.5%] right-[12.5%] h-px bg-gold/20" />
+          <div className="hidden sm:block absolute top-10 left-[16.67%] right-[16.67%] h-px bg-gold/20" />
 
-          <div className="grid sm:grid-cols-4 gap-8">
+          <div className="grid sm:grid-cols-3 gap-8">
             {steps.map((step, i) => (
               <FadeIn key={i} delay={i * 0.1}>
                 <div className="text-center relative">

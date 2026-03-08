@@ -17,10 +17,10 @@ const item = {
 }
 
 const stats = [
-  { value: '5 000+', label: 'Компаний в МФЦА' },
-  { value: '5–14', label: 'Дней регистрация' },
-  { value: '2066', label: 'Год действия льгот' },
   { value: '200+', label: 'Успешных кейсов' },
+  { value: '4', label: 'Направления услуг' },
+  { value: '50+', label: 'Активных клиентов' },
+  { value: '3+', label: 'Года на рынке' },
 ]
 
 export function Hero() {
@@ -38,19 +38,18 @@ export function Hero() {
           className="max-w-3xl"
         >
           <motion.div variants={item}>
-            <Badge>Официальный партнёр МФЦА и Astana Hub</Badge>
+            <Badge>Юридические решения для бизнеса</Badge>
           </motion.div>
 
           <motion.h1 variants={item} className="heading-xl text-cream mt-8 mb-6">
-            Зарегистрируйте компанию{' '}
+            Готовые решения{' '}
             <br className="hidden sm:block" />
-            в <em className="not-italic text-gold">МФЦА или Astana Hub</em>
-            <br className="hidden sm:block" /> за 5–14 дней
+            <em className="not-italic text-gold">для бизнеса</em>
           </motion.h1>
 
           <motion.p variants={item} className="body-lg text-muted max-w-xl mb-10">
-            Налоговые льготы до 2066 года. Юрисдикция английского права.
-            Более 5 000 компаний уже работают в МФЦА.
+            Готовые юридические решения для малого и среднего бизнеса,
+            которые помогут сэкономить время и деньги для защиты и развития вашего бизнеса.
           </motion.p>
 
           <motion.div variants={item} className="flex flex-wrap gap-4 mb-16">
