@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form'
 import { Check, MessageCircle } from 'lucide-react'
 import { FadeIn } from '@/components/ui/FadeIn'
 import { SectionHeader } from '@/components/ui/SectionHeader'
-import { buildWALink } from '@/lib/whatsapp'
+import { submitLead } from '@/lib/submit-lead'
 import { SERVICE_OPTIONS, CONTACTS } from '@/lib/constants'
 
 interface FormData {
@@ -19,7 +19,7 @@ export function ContactCTA() {
   })
 
   const onSubmit = (data: FormData) => {
-    window.open(buildWALink(data), '_blank')
+    submitLead(data, 'Главная')
   }
 
   return (
