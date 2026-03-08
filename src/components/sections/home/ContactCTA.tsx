@@ -1,7 +1,8 @@
 'use client'
 
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Check, MessageCircle } from 'lucide-react'
+import { Check, Send, Loader2 } from 'lucide-react'
 import { FadeIn } from '@/components/ui/FadeIn'
 import { SectionHeader } from '@/components/ui/SectionHeader'
 import { submitLead } from '@/lib/submit-lead'
@@ -14,12 +15,20 @@ interface FormData {
 }
 
 export function ContactCTA() {
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const { register, handleSubmit, formState: { errors }, reset } = useForm<FormData>({
     defaultValues: { interest: SERVICE_OPTIONS[0] },
   })
 
-  const onSubmit = (data: FormData) => {
-    submitLead(data, 'Главная')
+  const onSubmit = async (data: FormData) => {
+    setStatus('loading')
+    const result = await submitLead(data, 'Главная')
+    if (result.success) {
+      setStatus('success')
+      reset()
+    } else {
+      setStatus('error')
+    }
   }
 
   return (
@@ -47,50 +56,77 @@ export function ContactCTA() {
 
           {/* Right — Form */}
           <FadeIn delay={0.2}>
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className="bg-card rounded-lg border border-gold/10 p-8 space-y-4"
-            >
-              <input
-                {...register('name', { required: true, minLength: 2 })}
-                placeholder="Ваше имя"
-                className={`w-full bg-navy border ${errors.name ? 'border-red-500' : 'border-gold/10'} rounded px-4 py-3 text-cream placeholder:text-muted/50 focus:outline-none focus:border-gold/40 transition-colors`}
-              />
-              <input
-                {...register('phone', {
-                  required: true,
-                  pattern: /^[+7\d\s\-()]{10,}$/,
-                })}
-                placeholder="Номер телефона"
-                type="tel"
-                className={`w-full bg-navy border ${errors.phone ? 'border-red-500' : 'border-gold/10'} rounded px-4 py-3 text-cream placeholder:text-muted/50 focus:outline-none focus:border-gold/40 transition-colors`}
-              />
-              <select
-                {...register('interest')}
-                className="w-full bg-navy border border-gold/10 rounded px-4 py-3 text-cream focus:outline-none focus:border-gold/40 transition-colors"
+            {status === 'success' ? (
+              <div className="bg-card rounded-lg border border-gold/30 p-8 text-center">
+                <div className="w-16 h-16 rounded-full bg-gold/10 flex items-center justify-center mx-auto mb-4">
+                  <Check className="w-8 h-8 text-gold" />
+                </div>
+                <h3 className="text-xl font-semibold text-cream mb-2">Заявка отправлена!</h3>
+                <p className="text-muted">Наш юрист свяжется с вами в течение 1 часа.</p>
+                <button
+                  onClick={() => setStatus('idle')}
+                  className="mt-6 text-gold text-sm font-semibold hover:underline"
+                >
+                  Отправить ещё одну заявку
+                </button>
+              </div>
+            ) : (
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="bg-card rounded-lg border border-gold/10 p-8 space-y-4"
               >
-                {SERVICE_OPTIONS.map((opt) => (
-                  <option key={opt} value={opt}>
-                    {opt}
-                  </option>
-                ))}
-              </select>
+                <input
+                  {...register('name', { required: true, minLength: 2 })}
+                  placeholder="Ваше имя"
+                  className={`w-full bg-navy border ${errors.name ? 'border-red-500' : 'border-gold/10'} rounded px-4 py-3 text-cream placeholder:text-muted/50 focus:outline-none focus:border-gold/40 transition-colors`}
+                />
+                <input
+                  {...register('phone', {
+                    required: true,
+                    pattern: /^[+7\d\s\-()]{10,}$/,
+                  })}
+                  placeholder="Номер телефона"
+                  type="tel"
+                  className={`w-full bg-navy border ${errors.phone ? 'border-red-500' : 'border-gold/10'} rounded px-4 py-3 text-cream placeholder:text-muted/50 focus:outline-none focus:border-gold/40 transition-colors`}
+                />
+                <select
+                  {...register('interest')}
+                  className="w-full bg-navy border border-gold/10 rounded px-4 py-3 text-cream focus:outline-none focus:border-gold/40 transition-colors"
+                >
+                  {SERVICE_OPTIONS.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+                </select>
 
-              <button
-                type="submit"
-                className="w-full bg-whatsapp text-white flex items-center justify-center gap-3 px-8 py-4 rounded font-bold hover:brightness-110 transition-all"
-              >
-                <MessageCircle className="w-5 h-5" />
-                Написать в WhatsApp
-              </button>
+                <button
+                  type="submit"
+                  disabled={status === 'loading'}
+                  className="w-full bg-gold text-navy flex items-center justify-center gap-3 px-8 py-4 rounded font-bold hover:bg-gold-light transition-all disabled:opacity-70"
+                >
+                  {status === 'loading' ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <Send className="w-5 h-5" />
+                  )}
+                  {status === 'loading' ? 'Отправка...' : 'Оставить заявку'}
+                </button>
 
-              <p className="text-center text-sm text-muted">
-                Или позвоните:{' '}
-                <a href={`tel:${CONTACTS.phoneRaw}`} className="text-gold hover:underline">
-                  {CONTACTS.phone}
-                </a>
-              </p>
-            </form>
+                {status === 'error' && (
+                  <p className="text-center text-sm text-red-400">
+                    Ошибка отправки. Позвоните нам напрямую.
+                  </p>
+                )}
+
+                <p className="text-center text-sm text-muted">
+                  Или позвоните:{' '}
+                  <a href={`tel:${CONTACTS.phoneRaw}`} className="text-gold hover:underline">
+                    {CONTACTS.phone}
+                  </a>
+                </p>
+              </form>
+            )}
           </FadeIn>
         </div>
       </div>

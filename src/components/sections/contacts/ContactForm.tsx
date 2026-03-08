@@ -1,29 +1,60 @@
 'use client'
 
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { MessageCircle } from 'lucide-react'
+import { Send, Check, Loader2 } from 'lucide-react'
 import { FadeIn } from '@/components/ui/FadeIn'
 import { submitLead } from '@/lib/submit-lead'
 import { SERVICE_OPTIONS } from '@/lib/constants'
 import type { ContactFormData } from '@/types'
 
 export function ContactForm() {
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<ContactFormData>({
     defaultValues: { interest: SERVICE_OPTIONS[0] },
   })
 
-  const onSubmit = (data: ContactFormData) => {
-    submitLead(data, 'Контакты')
+  const onSubmit = async (data: ContactFormData) => {
+    setStatus('loading')
+    const result = await submitLead(data, 'Контакты')
+    if (result.success) {
+      setStatus('success')
+      reset()
+    } else {
+      setStatus('error')
+    }
   }
 
   const inputClass = (hasError: boolean) =>
     `w-full bg-navy border ${
       hasError ? 'border-red-500' : 'border-gold/10'
     } rounded px-4 py-3 text-cream placeholder:text-muted/50 focus:outline-none focus:border-gold/40 transition-colors`
+
+  if (status === 'success') {
+    return (
+      <FadeIn delay={0.2}>
+        <div className="bg-card rounded-lg border border-gold/30 p-8 text-center">
+          <div className="w-16 h-16 rounded-full bg-gold/10 flex items-center justify-center mx-auto mb-4">
+            <Check className="w-8 h-8 text-gold" />
+          </div>
+          <h3 className="text-xl font-semibold text-cream mb-2">Заявка отправлена!</h3>
+          <p className="text-muted mb-2">Наш юрист свяжется с вами в течение 1 часа.</p>
+          <p className="text-muted text-sm">Проверьте телефон — мы перезвоним.</p>
+          <button
+            onClick={() => setStatus('idle')}
+            className="mt-6 text-gold text-sm font-semibold hover:underline"
+          >
+            Отправить ещё одну заявку
+          </button>
+        </div>
+      </FadeIn>
+    )
+  }
 
   return (
     <FadeIn delay={0.2}>
@@ -83,11 +114,22 @@ export function ContactForm() {
 
         <button
           type="submit"
-          className="w-full bg-whatsapp text-white flex items-center justify-center gap-3 px-8 py-4 rounded font-bold hover:brightness-110 transition-all"
+          disabled={status === 'loading'}
+          className="w-full bg-gold text-navy flex items-center justify-center gap-3 px-8 py-4 rounded font-bold hover:bg-gold-light transition-all disabled:opacity-70"
         >
-          <MessageCircle className="w-5 h-5" />
-          Отправить заявку в WhatsApp
+          {status === 'loading' ? (
+            <Loader2 className="w-5 h-5 animate-spin" />
+          ) : (
+            <Send className="w-5 h-5" />
+          )}
+          {status === 'loading' ? 'Отправка...' : 'Оставить заявку'}
         </button>
+
+        {status === 'error' && (
+          <p className="text-center text-sm text-red-400">
+            Ошибка отправки. Попробуйте позвонить нам напрямую.
+          </p>
+        )}
       </form>
     </FadeIn>
   )

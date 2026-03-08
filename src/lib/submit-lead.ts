@@ -1,5 +1,3 @@
-import { buildWALink } from './whatsapp'
-
 interface LeadData {
   name: string
   phone: string
@@ -8,8 +6,12 @@ interface LeadData {
   message?: string
 }
 
-export async function submitLead(data: LeadData, page: string) {
-  // Get UTM params from URL
+interface SubmitResult {
+  success: boolean
+  error?: string
+}
+
+export async function submitLead(data: LeadData, page: string): Promise<SubmitResult> {
   const params = new URLSearchParams(window.location.search)
   const utm = {
     utm_source: params.get('utm_source') || undefined,
@@ -17,18 +19,22 @@ export async function submitLead(data: LeadData, page: string) {
     utm_campaign: params.get('utm_campaign') || undefined,
   }
 
-  // 1. Send to Bitrix via API
   try {
-    await fetch('/api/lead', {
+    const res = await fetch('/api/lead', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...data, ...utm, page }),
     })
+
+    const result = await res.json()
+
+    if (!res.ok || result.error) {
+      return { success: false, error: result.error || 'Ошибка отправки' }
+    }
+
+    return { success: true }
   } catch (e) {
     console.error('Failed to send lead to CRM:', e)
+    return { success: false, error: 'Ошибка сети' }
   }
-
-  // 2. Open WhatsApp
-  const waUrl = buildWALink(data)
-  window.open(waUrl, '_blank')
 }
