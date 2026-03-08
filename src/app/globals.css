@@ -1,26 +1,109 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-navy: #0D1B2E;
+  --color-navy-light: #1B2E4B;
+  --color-navy-dark: #060F1A;
+  --color-gold: #C9A84C;
+  --color-gold-light: #E8C96B;
+  --color-gold-muted: rgba(201,168,76,0.12);
+  --color-card: #121E30;
+  --color-muted: #8B9BB4;
+  --color-subtle: #4A5E78;
+  --color-cream: #F8F6F1;
+  --color-whatsapp: #25D366;
+  --color-hub: #7EC8E3;
+  --font-playfair: var(--font-playfair);
+  --font-manrope: var(--font-manrope);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-navy);
+  color: var(--color-cream);
+  font-family: var(--font-manrope), sans-serif;
+}
+
+/* Typography */
+.heading-xl {
+  font-family: var(--font-playfair), serif;
+  font-size: clamp(42px, 5.5vw, 72px);
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.heading-lg {
+  font-family: var(--font-playfair), serif;
+  font-size: clamp(32px, 3.5vw, 52px);
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.heading-md {
+  font-family: var(--font-playfair), serif;
+  font-size: clamp(24px, 2.5vw, 36px);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.label {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.body-lg {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.7;
+}
+
+.body {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.65;
+}
+
+.caption {
+  font-family: var(--font-manrope), sans-serif;
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-scroll {
+  animation: scroll 30s linear infinite;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-navy-dark);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-subtle);
+  border-radius: 3px;
 }
