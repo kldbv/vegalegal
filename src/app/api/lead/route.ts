@@ -40,6 +40,7 @@ export async function POST(req: NextRequest) {
       'fields[PHONE][0][VALUE_TYPE]': 'WORK',
       'fields[SOURCE_ID]': 'WEB',
       'fields[SOURCE_DESCRIPTION]': 'vegalegal.kz',
+      'fields[ASSIGNED_BY_ID]': '21',
       'fields[COMMENTS]': comments.join('\n'),
     }
 
