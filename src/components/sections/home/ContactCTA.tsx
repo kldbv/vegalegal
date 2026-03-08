@@ -82,13 +82,24 @@ export function ContactCTA() {
                 />
                 <input
                   {...register('phone', {
-                    required: true,
-                    pattern: /^[+7\d\s\-()]{10,}$/,
+                    required: 'Введите номер телефона',
+                    validate: (value) => {
+                      const digits = value.replace(/\D/g, '')
+                      if (digits.length < 10) return 'Минимум 10 цифр'
+                      if (digits.length > 12) return 'Слишком длинный номер'
+                      return true
+                    },
                   })}
-                  placeholder="Номер телефона"
+                  placeholder="+7 (___) ___-__-__"
                   type="tel"
+                  inputMode="numeric"
                   className={`w-full bg-navy border ${errors.phone ? 'border-red-500' : 'border-gold/10'} rounded px-4 py-3 text-cream placeholder:text-muted/50 focus:outline-none focus:border-gold/40 transition-colors`}
                 />
+                {errors.phone && (
+                  <p className="text-red-400 text-xs mt-1">
+                    {typeof errors.phone.message === 'string' ? errors.phone.message : 'Введите корректный номер'}
+                  </p>
+                )}
                 <select
                   {...register('interest')}
                   className="w-full bg-navy border border-gold/10 rounded px-4 py-3 text-cream focus:outline-none focus:border-gold/40 transition-colors"

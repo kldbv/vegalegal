@@ -76,15 +76,24 @@ export function ContactForm() {
         <div>
           <input
             {...register('phone', {
-              required: true,
-              pattern: /^[+7\d\s\-()]{10,}$/,
+              required: 'Введите номер телефона',
+              validate: (value) => {
+                const digits = value.replace(/\D/g, '')
+                if (digits.length < 10) return 'Минимум 10 цифр'
+                if (digits.length > 12) return 'Слишком длинный номер'
+                if (!/^\d+$/.test(digits)) return 'Только цифры'
+                return true
+              },
             })}
-            placeholder="Номер телефона"
+            placeholder="+7 (___) ___-__-__"
             type="tel"
+            inputMode="numeric"
             className={inputClass(!!errors.phone)}
           />
           {errors.phone && (
-            <p className="text-red-400 text-xs mt-1">Введите корректный номер</p>
+            <p className="text-red-400 text-xs mt-1">
+              {typeof errors.phone.message === 'string' ? errors.phone.message : 'Введите корректный номер'}
+            </p>
           )}
         </div>
 
